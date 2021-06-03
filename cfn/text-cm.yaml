@@ -143,6 +143,7 @@ Resources:
       Role: !GetAtt BLOGROLE.Arn
       Timeout: 120
       Runtime: python3.7
+    DependsOn: RESULTBUCKET1
 
   PARSE:
     Type: 'AWS::Lambda::Function'
@@ -156,6 +157,7 @@ Resources:
       Role: !GetAtt BLOGROLE.Arn
       Timeout: 120
       Runtime: python3.7
+    DependsOn: RESULTBUCKET1
 
   QUEUE:
     Type: 'AWS::Lambda::Function'
@@ -172,6 +174,7 @@ Resources:
       Role: !GetAtt BLOGROLE.Arn
       Timeout: 120
       Runtime: python3.7
+    DependsOn: RESULTBUCKET1
 
   QUEUETRIGGER:
     Type: 'AWS::Lambda::EventSourceMapping'
