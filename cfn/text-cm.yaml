@@ -130,8 +130,8 @@ Resources:
     Type: 'AWS::Lambda::Function'
     Properties:
       Code:
-        S3Bucket: !Ref RESULTBUCKET1
-        S3Key: validate.zip
+        S3Bucket: !Ref 'RESULTBUCKET1'
+        S3Key: 'validate.zip'
       Description: validate lambda function
       FunctionName: blog-validate
       Handler: blog-validate.lambda_handler
@@ -143,28 +143,26 @@ Resources:
       Role: !GetAtt BLOGROLE.Arn
       Timeout: 120
       Runtime: python3.7
-    DependsOn: RESULTBUCKET1
 
   PARSE:
     Type: 'AWS::Lambda::Function'
     Properties:
       Code:
-        S3Bucket: !Ref RESULTBUCKET1
-        S3Key: parse-desc.zip
+        S3Bucket: !Ref 'RESULTBUCKET1'
+        S3Key: 'parse-desc.zip'
       Description: parse lambda function
       FunctionName: blog-parse
       Handler: blog-parse.lambda_handler
       Role: !GetAtt BLOGROLE.Arn
       Timeout: 120
       Runtime: python3.7
-    DependsOn: RESULTBUCKET1
 
   QUEUE:
     Type: 'AWS::Lambda::Function'
     Properties:
       Code:
-        S3Bucket: !Ref RESULTBUCKET1
-        S3Key: extract-queue.zip
+        S3Bucket: !Ref 'RESULTBUCKET1'
+        S3Key: 'extract-queue.zip'
       Description: extract lambda function
       FunctionName: blog-extract
       Handler: blog-extract.lambda_handler
@@ -174,7 +172,6 @@ Resources:
       Role: !GetAtt BLOGROLE.Arn
       Timeout: 120
       Runtime: python3.7
-    DependsOn: RESULTBUCKET1
 
   QUEUETRIGGER:
     Type: 'AWS::Lambda::EventSourceMapping'
