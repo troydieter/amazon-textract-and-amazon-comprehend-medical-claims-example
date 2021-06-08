@@ -37,6 +37,20 @@ resource "aws_s3_bucket_notification" "resultbucket_notification" {
     filter_suffix       = ".png"
   }
 
+  lambda_function {
+    lambda_function_arn = aws_lambda_function.extract.arn
+    events              = ["s3:ObjectCreated:*"]
+    filter_prefix       = "input/"
+    filter_suffix       = ".jpg"
+  }
+
+  lambda_function {
+    lambda_function_arn = aws_lambda_function.extract.arn
+    events              = ["s3:ObjectCreated:*"]
+    filter_prefix       = "input/"
+    filter_suffix       = ".pdf"
+  }
+
 }
 
 resource "aws_s3_bucket_public_access_block" "result-block-public" {
