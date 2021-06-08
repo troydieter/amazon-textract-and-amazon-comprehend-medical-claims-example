@@ -15,7 +15,7 @@ resource "aws_s3_bucket" "resultbucket" {
 
   acl  = "private"
   tags = local.common-tags
-    depends_on = [
+  depends_on = [
     aws_lambda_function.parse,
     aws_lambda_function.extract
   ]
