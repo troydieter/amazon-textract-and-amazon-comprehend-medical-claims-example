@@ -90,6 +90,17 @@ resource "aws_s3_bucket_object" "validate" {
   tags                   = local.common-tags
 }
 
+resource "aws_s3_bucket_object" "successtest" {
+  key                    = "input/successtest.png"
+  bucket                 = aws_s3_bucket.resultbucket.id
+  source                 = "inventory/successtest.png"
+  server_side_encryption = "AES256"
+  tags                   = local.common-tags
+  depends_on = [
+    aws_lambda_event_source_mapping.queue
+  ]
+}
+
 resource "aws_s3_bucket_public_access_block" "result1-block-public" {
   bucket                  = aws_s3_bucket.resultbucket1.id
   block_public_acls       = true
