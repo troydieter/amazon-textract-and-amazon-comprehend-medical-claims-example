@@ -1,20 +1,21 @@
 resource "aws_lambda_function" "upload" {
   filename         = "inventory/upload.zip"
   function_name    = "inventory-${random_id.rando.hex}"
-  role             = aws_iam_role.blogrole10.arn
+  role             = aws_iam_role.iam_role.arn
   handler          = "index.lambda_handler"
   source_code_hash = filebase64sha256("inventory/upload.zip")
 
   runtime     = "python3.7"
   timeout     = 180
   description = "Upload"
+  tags = local.common-tags
 }
 
 resource "aws_lambda_function" "validate" {
   s3_bucket = aws_s3_bucket.resultbucket1.id
   s3_key = "validate.zip"
   function_name    = "validate-${random_id.rando.hex}"
-  role             = aws_iam_role.blogrole10.arn
+  role             = aws_iam_role.iam_role.arn
   handler          = "blog-validate.lambda_handler"
 
   runtime     = "python3.7"
@@ -27,25 +28,27 @@ resource "aws_lambda_function" "validate" {
         invalidsns = "${aws_sns_topic.snstopic.arn}"
     }
   }
+  tags = local.common-tags
 }
 
 resource "aws_lambda_function" "parse" {
   s3_bucket = aws_s3_bucket.resultbucket1.id
   s3_key = "parse-desc.zip"
   function_name    = "parse-${random_id.rando.hex}"
-  role             = aws_iam_role.blogrole10.arn
+  role             = aws_iam_role.iam_role.arn
   handler          = "blog-parse.lambda_handler"
 
   runtime     = "python3.7"
   timeout     = 120
   description = "parse lambda function"
+  tags = local.common-tags
 }
 
 resource "aws_lambda_function" "extract" {
   s3_bucket = aws_s3_bucket.resultbucket1.id
   s3_key = "extract-queue.zip"
   function_name    = "extract-${random_id.rando.hex}"
-  role             = aws_iam_role.blogrole10.arn
+  role             = aws_iam_role.iam_role.arn
   handler          = "blog-extract.lambda_handler"
 
   runtime     = "python3.7"
@@ -57,6 +60,7 @@ resource "aws_lambda_function" "extract" {
         allqueue = "${aws_sqs_queue.VALIDATEQUEUE.arn}"
     }
   }
+  tags = local.common-tags
 }
 
 resource "aws_lambda_event_source_mapping" "queue" {

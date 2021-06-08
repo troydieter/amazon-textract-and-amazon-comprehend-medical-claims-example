@@ -1,1 +1,2 @@
 /tf/.terraform
+/tf/remote_state.tf

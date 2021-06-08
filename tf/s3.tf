@@ -14,6 +14,7 @@ resource "aws_s3_bucket" "resultbucket" {
   }
 
   acl = "private"
+  tags = local.common-tags
 }
 
 resource "aws_s3_bucket_public_access_block" "result-block-public" {
@@ -40,6 +41,7 @@ resource "aws_s3_bucket" "resultbucket1" {
   }
 
   acl = "private"
+  tags = local.common-tags
 }
 
 resource "aws_s3_bucket_object" "parse-desc" {
@@ -47,6 +49,7 @@ resource "aws_s3_bucket_object" "parse-desc" {
   bucket                 = aws_s3_bucket.resultbucket1.id
   source                 = "inventory/parse-desc.zip"
   server_side_encryption = "AES256"
+  tags = local.common-tags
 }
 
 resource "aws_s3_bucket_object" "extract-queue" {
@@ -54,6 +57,7 @@ resource "aws_s3_bucket_object" "extract-queue" {
   bucket                 = aws_s3_bucket.resultbucket1.id
   source                 = "inventory/extract-queue.zip"
   server_side_encryption = "AES256"
+  tags = local.common-tags
 }
 
 resource "aws_s3_bucket_object" "validate" {
@@ -61,6 +65,7 @@ resource "aws_s3_bucket_object" "validate" {
   bucket                 = aws_s3_bucket.resultbucket1.id
   source                 = "inventory/validate.zip"
   server_side_encryption = "AES256"
+  tags = local.common-tags
 }
 
 resource "aws_s3_bucket_public_access_block" "result1-block-public" {

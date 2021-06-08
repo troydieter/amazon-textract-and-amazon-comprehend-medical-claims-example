@@ -1,5 +1,6 @@
 resource "aws_sns_topic" "snstopic" {
   name = "sns-${random_id.rando.hex}"
+  tags = local.common-tags
 }
 
 resource "aws_sns_topic_subscription" "emailsub" {

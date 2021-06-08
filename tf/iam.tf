@@ -1,4 +1,4 @@
-resource "aws_iam_role" "blogrole10" {
+resource "aws_iam_role" "iam_role" {
   name               = "iamrole-${random_id.rando.hex}"
   description        = "IAM Role"
   assume_role_policy = <<EOF
@@ -21,23 +21,11 @@ resource "aws_iam_role" "blogrole10" {
         ]
     }
 EOF
+tags = local.common-tags
 }
 
-variable "policy-attach" {
-  default = {
-    "arn:aws:iam::aws:policy/AmazonS3FullAccess"                       = 1,
-    "arn:aws:iam::aws:policy/AmazonSQSFullAccess"                      = 2,
-    "arn:aws:iam::aws:policy/AmazonSNSFullAccess"                      = 3,
-    "arn:aws:iam::aws:policy/AWSLambda_FullAccess"                     = 4,
-    "arn:aws:iam::aws:policy/AmazonTextractFullAccess"                 = 5,
-    "arn:aws:iam::aws:policy/ComprehendMedicalFullAccess"              = 6,
-    "arn:aws:iam::aws:policy/CloudWatchFullAccess"                     = 7,
-    "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole" = 8
-  }
-}
-
-resource "aws_iam_role_policy_attachment" "blogrole10" {
+resource "aws_iam_role_policy_attachment" "iam_role" {
   for_each   = var.policy-attach
   policy_arn = each.key
-  role       = aws_iam_role.blogrole10.name
+  role       = aws_iam_role.iam_role.name
 }
