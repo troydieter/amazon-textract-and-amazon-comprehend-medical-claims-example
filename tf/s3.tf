@@ -37,9 +37,6 @@ resource "aws_s3_bucket_notification" "resultbucket_notification" {
     filter_suffix       = ".png"
   }
 
-  depends_on = [
-    aws_lambda_permission.bucketpermission
-  ]
 }
 
 resource "aws_s3_bucket_public_access_block" "result-block-public" {

@@ -90,9 +90,17 @@ resource "aws_lambda_event_source_mapping" "queue" {
   function_name    = aws_lambda_function.validate.arn
 }
 
-resource "aws_lambda_permission" "bucketpermission" {
+resource "aws_lambda_permission" "bucketpermission-parse" {
   action         = "lambda:InvokeFunction"
   function_name  = aws_lambda_function.parse.arn
+  principal      = "s3.amazonaws.com"
+  source_account = data.aws_caller_identity.current.account_id
+  source_arn     = aws_s3_bucket.resultbucket.arn
+}
+
+resource "aws_lambda_permission" "bucketpermission-extract" {
+  action         = "lambda:InvokeFunction"
+  function_name  = aws_lambda_function.extract.arn
   principal      = "s3.amazonaws.com"
   source_account = data.aws_caller_identity.current.account_id
   source_arn     = aws_s3_bucket.resultbucket.arn
