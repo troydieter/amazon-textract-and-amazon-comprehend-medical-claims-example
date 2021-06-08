@@ -1,14 +1,17 @@
 variable "aws_region" {
   type    = string
   default = "us-east-1"
+  description = "AWS Region to deploy to"
 }
 
 variable "aws_profile" {
   type = string
+  description = "AWS Profile to use credentials to deploy"
 }
 
 variable "email" {
   type = string
+  description = "Email address used for notifications"
 }
 
 variable "policy-attach" {
