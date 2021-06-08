@@ -13,8 +13,33 @@ resource "aws_s3_bucket" "resultbucket" {
     enabled = true
   }
 
-  acl = "private"
+  acl  = "private"
   tags = local.common-tags
+    depends_on = [
+    aws_lambda_function.parse,
+    aws_lambda_function.extract
+  ]
+}
+
+resource "aws_s3_bucket_notification" "resultbucket_notification" {
+  bucket = aws_s3_bucket.resultbucket.id
+
+  lambda_function {
+    lambda_function_arn = aws_lambda_function.parse.arn
+    events              = ["s3:ObjectCreated:*"]
+    filter_prefix       = "result/"
+  }
+
+  lambda_function {
+    lambda_function_arn = aws_lambda_function.extract.arn
+    events              = ["s3:ObjectCreated:*"]
+    filter_prefix       = "input/"
+    filter_suffix       = ".png"
+  }
+
+  depends_on = [
+    aws_lambda_permission.bucketpermission
+  ]
 }
 
 resource "aws_s3_bucket_public_access_block" "result-block-public" {
@@ -40,7 +65,7 @@ resource "aws_s3_bucket" "resultbucket1" {
     enabled = true
   }
 
-  acl = "private"
+  acl  = "private"
   tags = local.common-tags
 }
 
@@ -49,7 +74,7 @@ resource "aws_s3_bucket_object" "parse-desc" {
   bucket                 = aws_s3_bucket.resultbucket1.id
   source                 = "inventory/parse-desc.zip"
   server_side_encryption = "AES256"
-  tags = local.common-tags
+  tags                   = local.common-tags
 }
 
 resource "aws_s3_bucket_object" "extract-queue" {
@@ -57,7 +82,7 @@ resource "aws_s3_bucket_object" "extract-queue" {
   bucket                 = aws_s3_bucket.resultbucket1.id
   source                 = "inventory/extract-queue.zip"
   server_side_encryption = "AES256"
-  tags = local.common-tags
+  tags                   = local.common-tags
 }
 
 resource "aws_s3_bucket_object" "validate" {
@@ -65,7 +90,7 @@ resource "aws_s3_bucket_object" "validate" {
   bucket                 = aws_s3_bucket.resultbucket1.id
   source                 = "inventory/validate.zip"
   server_side_encryption = "AES256"
-  tags = local.common-tags
+  tags                   = local.common-tags
 }
 
 resource "aws_s3_bucket_public_access_block" "result1-block-public" {
@@ -77,6 +102,6 @@ resource "aws_s3_bucket_public_access_block" "result1-block-public" {
 }
 
 output "s3bucket" {
-  value = aws_s3_bucket.resultbucket.arn
+  value       = aws_s3_bucket.resultbucket.arn
   description = "Bucket for input and Outputs"
 }

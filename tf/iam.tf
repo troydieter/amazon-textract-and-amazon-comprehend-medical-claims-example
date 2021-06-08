@@ -21,7 +21,7 @@ resource "aws_iam_role" "iam_role" {
         ]
     }
 EOF
-tags = local.common-tags
+  tags               = local.common-tags
 }
 
 resource "aws_iam_role_policy_attachment" "iam_role" {

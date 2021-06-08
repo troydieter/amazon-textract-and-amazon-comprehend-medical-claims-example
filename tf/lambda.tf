@@ -8,7 +8,7 @@ resource "aws_lambda_function" "upload" {
   runtime     = "python3.7"
   timeout     = 180
   description = "Upload"
-  tags = local.common-tags
+  tags        = local.common-tags
   depends_on = [
     aws_s3_bucket_object.parse-desc,
     aws_s3_bucket_object.extract-queue,
@@ -17,20 +17,20 @@ resource "aws_lambda_function" "upload" {
 }
 
 resource "aws_lambda_function" "validate" {
-  s3_bucket = aws_s3_bucket.resultbucket1.id
-  s3_key = "validate.zip"
-  function_name    = "validate-${random_id.rando.hex}"
-  role             = aws_iam_role.iam_role.arn
-  handler          = "blog-validate.lambda_handler"
+  s3_bucket     = aws_s3_bucket.resultbucket1.id
+  s3_key        = "validate.zip"
+  function_name = "validate-${random_id.rando.hex}"
+  role          = aws_iam_role.iam_role.arn
+  handler       = "blog-validate.lambda_handler"
 
   runtime     = "python3.7"
   timeout     = 120
   description = "validate lambda function"
   environment {
     variables = {
-        invalidqueue = "${aws_sqs_queue.INVALIDATEQUEUE.arn}"
-        resultbucket = "${aws_s3_bucket.resultbucket.id}"
-        invalidsns = "${aws_sns_topic.snstopic.arn}"
+      invalidqueue = "${aws_sqs_queue.INVALIDATEQUEUE.arn}"
+      resultbucket = "${aws_s3_bucket.resultbucket.id}"
+      invalidsns   = "${aws_sns_topic.snstopic.arn}"
     }
   }
   tags = local.common-tags
@@ -42,16 +42,16 @@ resource "aws_lambda_function" "validate" {
 }
 
 resource "aws_lambda_function" "parse" {
-  s3_bucket = aws_s3_bucket.resultbucket1.id
-  s3_key = "parse-desc.zip"
-  function_name    = "parse-${random_id.rando.hex}"
-  role             = aws_iam_role.iam_role.arn
-  handler          = "blog-parse.lambda_handler"
+  s3_bucket     = aws_s3_bucket.resultbucket1.id
+  s3_key        = "parse-desc.zip"
+  function_name = "parse-${random_id.rando.hex}"
+  role          = aws_iam_role.iam_role.arn
+  handler       = "blog-parse.lambda_handler"
 
   runtime     = "python3.7"
   timeout     = 120
   description = "parse lambda function"
-  tags = local.common-tags
+  tags        = local.common-tags
   depends_on = [
     aws_s3_bucket_object.parse-desc,
     aws_s3_bucket_object.extract-queue,
@@ -60,11 +60,11 @@ resource "aws_lambda_function" "parse" {
 }
 
 resource "aws_lambda_function" "extract" {
-  s3_bucket = aws_s3_bucket.resultbucket1.id
-  s3_key = "extract-queue.zip"
-  function_name    = "extract-${random_id.rando.hex}"
-  role             = aws_iam_role.iam_role.arn
-  handler          = "blog-extract.lambda_handler"
+  s3_bucket     = aws_s3_bucket.resultbucket1.id
+  s3_key        = "extract-queue.zip"
+  function_name = "extract-${random_id.rando.hex}"
+  role          = aws_iam_role.iam_role.arn
+  handler       = "blog-extract.lambda_handler"
 
   runtime     = "python3.7"
   timeout     = 120
@@ -72,7 +72,7 @@ resource "aws_lambda_function" "extract" {
 
   environment {
     variables = {
-        allqueue = "${aws_sqs_queue.VALIDATEQUEUE.arn}"
+      allqueue = "${aws_sqs_queue.VALIDATEQUEUE.arn}"
     }
   }
   tags = local.common-tags
@@ -84,31 +84,31 @@ resource "aws_lambda_function" "extract" {
 }
 
 resource "aws_lambda_event_source_mapping" "queue" {
-  batch_size = 10
-  enabled = true
+  batch_size       = 10
+  enabled          = true
   event_source_arn = aws_sqs_queue.ALLEQUEUE.arn
-  function_name = aws_lambda_function.validate.arn
+  function_name    = aws_lambda_function.validate.arn
 }
 
 resource "aws_lambda_permission" "bucketpermission" {
-  action = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.parse.arn
-  principal = "s3.amazonaws.com"
+  action         = "lambda:InvokeFunction"
+  function_name  = aws_lambda_function.parse.arn
+  principal      = "s3.amazonaws.com"
   source_account = data.aws_caller_identity.current.account_id
-  source_arn = aws_s3_bucket.resultbucket.arn
+  source_arn     = aws_s3_bucket.resultbucket.arn
 }
 
 output "LambdaFunctionExtract" {
-  value = aws_lambda_function.extract.arn
+  value       = aws_lambda_function.extract.arn
   description = "Lambda Function to extract key-value from form"
 }
 
 output "LambdaFunctionValidate" {
-  value = aws_lambda_function.validate.arn
+  value       = aws_lambda_function.validate.arn
   description = "Lambda Function to validate form"
 }
 
 output "LambdaFunctionComprehendMedical" {
-  value = aws_lambda_function.parse.arn
+  value       = aws_lambda_function.parse.arn
   description = "Lambda Function to detect medical entities using comprehend medical"
 }
