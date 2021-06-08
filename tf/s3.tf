@@ -1,5 +1,14 @@
 resource "aws_s3_bucket" "resultbucket" {
   bucket = "result-${random_id.rando.hex}"
+  server_side_encryption_configuration {
+    rule {
+      apply_server_side_encryption_by_default {
+        sse_algorithm = "AES256"
+      }
+    }
+
+  }
+
   versioning {
     enabled = true
   }
@@ -14,6 +23,7 @@ resource "aws_s3_bucket" "resultbucket" {
 
 resource "aws_s3_bucket_notification" "resultbucket_notification" {
   bucket = aws_s3_bucket.resultbucket.id
+
   lambda_function {
     lambda_function_arn = aws_lambda_function.parse.arn
     events              = ["s3:ObjectCreated:*"]
@@ -39,6 +49,15 @@ resource "aws_s3_bucket_public_access_block" "result-block-public" {
 
 resource "aws_s3_bucket" "resultbucket1" {
   bucket = "result1-${random_id.rando.hex}"
+  server_side_encryption_configuration {
+    rule {
+      apply_server_side_encryption_by_default {
+        sse_algorithm = "AES256"
+      }
+    }
+
+  }
+
   versioning {
     enabled = true
   }
@@ -48,31 +67,35 @@ resource "aws_s3_bucket" "resultbucket1" {
 }
 
 resource "aws_s3_bucket_object" "parse-desc" {
-  key    = "parse-desc.zip"
-  bucket = aws_s3_bucket.resultbucket1.id
-  source = "inventory/parse-desc.zip"
-  tags   = local.common-tags
+  key                    = "parse-desc.zip"
+  bucket                 = aws_s3_bucket.resultbucket1.id
+  source                 = "inventory/parse-desc.zip"
+  server_side_encryption = "AES256"
+  tags                   = local.common-tags
 }
 
 resource "aws_s3_bucket_object" "extract-queue" {
-  key    = "extract-queue.zip"
-  bucket = aws_s3_bucket.resultbucket1.id
-  source = "inventory/extract-queue.zip"
-  tags   = local.common-tags
+  key                    = "extract-queue.zip"
+  bucket                 = aws_s3_bucket.resultbucket1.id
+  source                 = "inventory/extract-queue.zip"
+  server_side_encryption = "AES256"
+  tags                   = local.common-tags
 }
 
 resource "aws_s3_bucket_object" "validate" {
-  key    = "validate.zip"
-  bucket = aws_s3_bucket.resultbucket1.id
-  source = "inventory/validate.zip"
-  tags   = local.common-tags
+  key                    = "validate.zip"
+  bucket                 = aws_s3_bucket.resultbucket1.id
+  source                 = "inventory/validate.zip"
+  server_side_encryption = "AES256"
+  tags                   = local.common-tags
 }
 
 resource "aws_s3_bucket_object" "successtest" {
-  key    = "input/successtest.png"
-  bucket = aws_s3_bucket.resultbucket.id
-  source = "inventory/successtest.png"
-  tags   = local.common-tags
+  key                    = "input/successtest.png"
+  bucket                 = aws_s3_bucket.resultbucket.id
+  source                 = "inventory/successtest.png"
+  server_side_encryption = "AES256"
+  tags                   = local.common-tags
   depends_on = [
     aws_lambda_event_source_mapping.queue
   ]
