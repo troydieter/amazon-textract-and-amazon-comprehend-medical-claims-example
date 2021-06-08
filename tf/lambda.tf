@@ -28,7 +28,7 @@ resource "aws_lambda_function" "validate" {
   description = "validate lambda function"
   environment {
     variables = {
-      invalidqueue = "${aws_sqs_queue.INVALIDATEQUEUE.arn}"
+      invalidqueue = "${aws_sqs_queue.INVALIDATEQUEUE.id}"
       resultbucket = "${aws_s3_bucket.resultbucket.id}"
       invalidsns   = "${aws_sns_topic.snstopic.arn}"
     }
@@ -72,7 +72,7 @@ resource "aws_lambda_function" "extract" {
 
   environment {
     variables = {
-      allqueue = "${aws_sqs_queue.VALIDATEQUEUE.arn}"
+      allqueue = "${aws_sqs_queue.VALIDATEQUEUE.id}"
     }
   }
   tags = local.common-tags
