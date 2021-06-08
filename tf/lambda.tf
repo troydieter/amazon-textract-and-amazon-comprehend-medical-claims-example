@@ -78,7 +78,7 @@ resource "aws_lambda_function" "extract" {
   tags = local.common-tags
   depends_on = [
     aws_s3_bucket_object.parse-desc,
-    aws_s3_bucket_object.extract,
+    aws_s3_bucket_object.extract-queue,
     aws_s3_bucket_object.validate
   ]
 }
