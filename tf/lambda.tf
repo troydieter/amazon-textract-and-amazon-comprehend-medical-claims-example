@@ -9,6 +9,11 @@ resource "aws_lambda_function" "upload" {
   timeout     = 180
   description = "Upload"
   tags = local.common-tags
+  depends_on = [
+    aws_s3_bucket_object.parse-desc,
+    aws_s3_bucket_object.extract,
+    aws_s3_bucket_object.validate
+  ]
 }
 
 resource "aws_lambda_function" "validate" {
@@ -29,6 +34,11 @@ resource "aws_lambda_function" "validate" {
     }
   }
   tags = local.common-tags
+  depends_on = [
+    aws_s3_bucket_object.parse-desc,
+    aws_s3_bucket_object.extract,
+    aws_s3_bucket_object.validate
+  ]
 }
 
 resource "aws_lambda_function" "parse" {
@@ -42,6 +52,11 @@ resource "aws_lambda_function" "parse" {
   timeout     = 120
   description = "parse lambda function"
   tags = local.common-tags
+  depends_on = [
+    aws_s3_bucket_object.parse-desc,
+    aws_s3_bucket_object.extract,
+    aws_s3_bucket_object.validate
+  ]
 }
 
 resource "aws_lambda_function" "extract" {
@@ -61,6 +76,11 @@ resource "aws_lambda_function" "extract" {
     }
   }
   tags = local.common-tags
+  depends_on = [
+    aws_s3_bucket_object.parse-desc,
+    aws_s3_bucket_object.extract,
+    aws_s3_bucket_object.validate
+  ]
 }
 
 resource "aws_lambda_event_source_mapping" "queue" {
