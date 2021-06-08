@@ -86,7 +86,7 @@ resource "aws_lambda_function" "extract" {
 resource "aws_lambda_event_source_mapping" "queue" {
   batch_size       = 10
   enabled          = true
-  event_source_arn = aws_sqs_queue.ALLEQUEUE.arn
+  event_source_arn = aws_sqs_queue.VALIDATEQUEUE.arn
   function_name    = aws_lambda_function.validate.arn
 }
 
