@@ -26,7 +26,7 @@ resource "aws_glue_catalog_table" "aws_glue_catalog_table" {
       name                  = "gluestr${random_id.rando.hex}"
       serialization_library = "org.apache.hadoop.hive.serde2.OpenCSVSerde"
 
-      parameters {
+      parameters = {
         separatorChar = ","
         quoteChar = "\""
         escapeChar = "\\"
